@@ -1,6 +1,8 @@
 .env
 __pycache__/
-*.html
+# *.html  <-- This was causing index.html to be ignored
+debug_naver.html
+naver_search_debug.html
 *.log
 *.bat
 .cursor/
