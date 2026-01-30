@@ -1,0 +1,12 @@
+.env
+__pycache__/
+*.html
+*.log
+*.bat
+.cursor/
+node_modules/
+dist/
+build/
+out/
+.DS_Store
+Thumbs.db
