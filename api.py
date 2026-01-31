@@ -15,7 +15,7 @@ import email.utils
 import os
 from concurrent.futures import ThreadPoolExecutor
 
-app = Flask(__name__, static_folder='static', static_url_path='')
+app = Flask(__name__, static_folder='public', static_url_path='')
 CORS(app)  # Enable CORS for frontend interaction
 
 @app.route('/')

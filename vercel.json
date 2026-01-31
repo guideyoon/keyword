@@ -9,7 +9,7 @@
     },
     {
       "source": "/(.*)",
-      "destination": "static/index.html"
+      "destination": "public/index.html"
     }
   ]
 }
