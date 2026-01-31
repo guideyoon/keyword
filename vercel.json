@@ -5,6 +5,9 @@
       "destination": "api.py"
     },
     {
+      "handle": "filesystem"
+    },
+    {
       "source": "/(.*)",
       "destination": "static/index.html"
     }
