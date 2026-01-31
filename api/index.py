@@ -32,12 +32,21 @@ CORS(app)  # Enable CORS for frontend interaction
 def health():
     return jsonify(status="ok", message="API is running", python_version=sys.version)
 
+@app.route('/api/debug/ad')
+def debug_ad():
+    keyword = request.args.get('q', '로봇청소기')
+    return jsonify(get_search_volume(keyword))
+
 @app.route('/api/debug')
 def debug():
     return jsonify({
         "cwd": os.getcwd(),
         "files": os.listdir(os.path.dirname(__file__)),
-        "path": sys.path
+        "path": sys.path,
+        "env_keys": {
+            "NAVER_AD_ACCESS_LICENSE": bool(os.getenv("NAVER_AD_ACCESS_LICENSE")),
+            "NAVER_AD_CUSTOMER_ID": bool(os.getenv("NAVER_AD_CUSTOMER_ID"))
+        }
     })
 
 def remove_html_tags(text):

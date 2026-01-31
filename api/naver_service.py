@@ -182,9 +182,11 @@ def get_search_volume(keyword):
             data = res.json()
             keyword_list = data.get('keywordList', [])
             
-            # Find exact match
+            # Find exact match (case-insensitive and space-insensitive)
+            target = keyword.replace(" ", "").lower()
             for item in keyword_list:
-                if item['relKeyword'].replace(" ", "") == keyword.replace(" ", ""):
+                rel_kwd = item['relKeyword'].replace(" ", "").lower()
+                if rel_kwd == target:
                     pc_vol = item.get('monthlyPcQcCnt', 0)
                     mo_vol = item.get('monthlyMobileQcCnt', 0)
                     
@@ -200,6 +202,9 @@ def get_search_volume(keyword):
                         'total': pc_vol + mo_vol,
                         'comp_idx': comp_idx
                     }
+            
+            # If no exact match, log what we got for debugging
+            print(f"DEBUG: No exact match for '{target}'. Got: {[k['relKeyword'] for k in keyword_list[:5]]}")
                     
             # If no exact match found in list (should be there if hinted)
             if keyword_list:
