@@ -187,9 +187,10 @@ def related():
         for future in futures:
             try:
                 res = future.result()
-                # Filter out the original keyword (normalized comparison)
-                res_norm = res['keyword'].lower().replace(" ", "")
-                if res_norm != norm_keyword:
+                # Only filter exact original keyword match, keep variants like "김원준SHOW"
+                if res['keyword'].lower().replace(" ", "") != norm_keyword:
+                    stat_data.append(res)
+                elif res['total'] > 0:  # Keep original if it has volume data
                     stat_data.append(res)
             except Exception as e:
                 print(f"Error fetching stats for related keyword: {e}")
@@ -197,6 +198,7 @@ def related():
     # Re-sort by total volume for final output
     stat_data.sort(key=lambda x: x['total'], reverse=True)
     return jsonify(stat_data)
+
 
 
 @app.route('/api/search', methods=['GET'])
