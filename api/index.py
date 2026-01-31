@@ -134,6 +134,7 @@ def related():
     
     # Merge: Prefer ad API data, add scraped ones that aren't in ad results
     ad_keywords_set = set(item['keyword'].lower().replace(" ", "") for item in ad_results)
+    keywords_needing_volume = []
     
     for sk in scraped_keywords:
         sk_norm = sk.lower().replace(" ", "")
@@ -145,55 +146,61 @@ def related():
                 'total': 0,
                 'comp_idx': 0
             })
+            keywords_needing_volume.append(sk)
     
     if not ad_results:
         return jsonify([])
+    
+    # Sort by total volume and take top 30 for processing
+    sorted_items = sorted(ad_results, key=lambda x: x['total'], reverse=True)[:30]
+    
+    # Batch fetch search volumes for keywords with 0 volume (from scraping)
+    zero_vol_keywords = [item['keyword'] for item in sorted_items if item['total'] == 0]
+    batch_volumes = {}
+    if zero_vol_keywords:
+        batch_volumes = get_search_volumes_for_keywords(zero_vol_keywords)
+    
+    # Update items with batch-fetched volumes
+    for item in sorted_items:
+        if item['total'] == 0:
+            kwd_norm = item['keyword'].replace(" ", "").lower()
+            vol_info = batch_volumes.get(kwd_norm)
+            if vol_info:
+                item['pc'] = vol_info.get('pc', 0)
+                item['mobile'] = vol_info.get('mobile', 0)
+                item['total'] = vol_info.get('total', 0)
         
     stat_data = []
     
-    # Fetch document counts and volumes in parallel
-    def fetch_stat(item):
+    # Now only fetch document counts in parallel (volumes already fetched)
+    def fetch_docs(item):
         kwd = item['keyword']
         info = get_keyword_info(kwd)
         docs = info.get('total', 0)
-        
-        # If no volume from ad API, try to fetch it
         total_vol = item['total']
-        pc = item['pc']
-        mobile = item['mobile']
-        
-        if total_vol == 0:
-            vol_data = get_search_volume(kwd)
-            if vol_data:
-                pc = vol_data.get('pc', 0)
-                mobile = vol_data.get('mobile', 0)
-                total_vol = vol_data.get('total', 0)
-        
         ratio = (docs / total_vol) if total_vol > 0 else 0
         
         return {
             "keyword": kwd,
-            "pc": pc,
-            "mobile": mobile,
+            "pc": item['pc'],
+            "mobile": item['mobile'],
             "total": total_vol,
             "docs": docs,
             "ratio": round(ratio, 4)
         }
 
     with ThreadPoolExecutor(max_workers=10) as executor:
-        # Sort by total volume and take top 30
-        sorted_items = sorted(ad_results, key=lambda x: x['total'], reverse=True)[:30]
-        futures = [executor.submit(fetch_stat, item) for item in sorted_items]
+        futures = [executor.submit(fetch_docs, item) for item in sorted_items]
         for future in futures:
             try:
                 res = future.result()
-                # Only filter exact original keyword match, keep variants like "김원준SHOW"
+                # Only filter exact original keyword match
                 if res['keyword'].lower().replace(" ", "") != norm_keyword:
                     stat_data.append(res)
                 elif res['total'] > 0:  # Keep original if it has volume data
                     stat_data.append(res)
             except Exception as e:
-                print(f"Error fetching stats for related keyword: {e}")
+                print(f"Error fetching docs for related keyword: {e}")
                 
     # Re-sort by total volume for final output
     stat_data.sort(key=lambda x: x['total'], reverse=True)
