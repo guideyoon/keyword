@@ -5,11 +5,8 @@
       "destination": "api.py"
     },
     {
-      "handle": "filesystem"
-    },
-    {
-      "source": "/(.*)",
-      "destination": "public/index.html"
+      "source": "/((?!api/|.*\\..*).*)",
+      "destination": "/index.html"
     }
   ]
 }
