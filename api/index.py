@@ -123,30 +123,45 @@ def related():
     if not keyword:
         return jsonify({"error": "Keyword is required"}), 400
     
-    related_keywords = get_related_keywords(keyword)
-    if not related_keywords:
+    # Use the Ad API to get related keywords and their volumes directly
+    # This is much more accurate than scraping for multi-word queries
+    ad_results = get_related_keywords_from_ad_api(keyword)
+    if not ad_results:
         return jsonify([])
         
-    ad_vol_dict = get_search_volumes_for_keywords(related_keywords)
     stat_data = []
     
-    for r_kwd in related_keywords:
-        vol_info = ad_vol_dict.get(r_kwd.replace(" ", ""), None)
-        r_total = vol_info['total'] if vol_info else 0
+    # Fetch document counts in parallel to speed up the response
+    def fetch_stat(item):
+        kwd = item['keyword']
+        info = get_keyword_info(kwd)
+        docs = info.get('total', 0)
+        total_vol = item['total']
+        ratio = (docs / total_vol) if total_vol > 0 else 0
         
-        info = get_keyword_info(r_kwd)
-        r_docs = info.get('total', 0)
-        r_ratio = (r_docs / r_total) if r_total > 0 else 0
-        
-        stat_data.append({
-            "keyword": r_kwd,
-            "pc": vol_info['pc'] if vol_info else 0,
-            "mobile": vol_info['mobile'] if vol_info else 0,
-            "total": r_total,
-            "docs": r_docs,
-            "ratio": round(r_ratio, 4)
-        })
-        
+        return {
+            "keyword": kwd,
+            "pc": item['pc'],
+            "mobile": item['mobile'],
+            "total": total_vol,
+            "docs": docs,
+            "ratio": round(ratio, 4)
+        }
+
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        # Sort by total volume and take top 30 for better performance and relevance
+        top_items = sorted(ad_results, key=lambda x: x['total'], reverse=True)[:30]
+        futures = [executor.submit(fetch_stat, item) for item in top_items]
+        for future in futures:
+            try:
+                res = future.result()
+                if res['keyword'] != keyword: # Filter out original keyword
+                    stat_data.append(res)
+            except Exception as e:
+                print(f"Error fetching stats for related keyword: {e}")
+                
+    # Re-sort by total volume for final output
+    stat_data.sort(key=lambda x: x['total'], reverse=True)
     return jsonify(stat_data)
 
 @app.route('/api/search', methods=['GET'])
