@@ -74,8 +74,14 @@ def analyze():
     # 3. Blog Rank
     ranks = get_blog_rank(keyword)
     
+    client_id, client_secret = get_api_keys()
+    
     return jsonify({
         "keyword": keyword,
+        "api_status": {
+            "naver_search": bool(client_id and client_secret),
+            "naver_ad": bool(os.getenv("NAVER_AD_ACCESS_LICENSE"))
+        },
         "summary": {
             "pc": vol_data['pc'] if vol_data else 0,
             "mobile": vol_data['mobile'] if vol_data else 0,
