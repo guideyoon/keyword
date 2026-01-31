@@ -670,3 +670,73 @@ body {
 #difficulty-card.hard .stat-value {
     color: var(--red);
 }
+
+/* Footer */
+.site-footer {
+    background: var(--bg-sidebar);
+    border-top: 1px solid var(--border);
+    padding: 24px 0;
+    margin-top: 40px;
+}
+
+.footer-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    text-align: center;
+    padding: 0 20px;
+}
+
+.footer-links {
+    margin-bottom: 16px;
+}
+
+.footer-links a {
+    color: var(--text-secondary);
+    text-decoration: none;
+    font-size: 14px;
+    transition: color 0.2s;
+}
+
+.footer-links a:hover {
+    color: var(--accent);
+}
+
+.footer-links .divider {
+    color: var(--border);
+    margin: 0 12px;
+}
+
+.footer-copyright {
+    font-size: 13px;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.footer-disclaimer {
+    font-size: 11px;
+    color: var(--text-secondary);
+    opacity: 0.7;
+}
+
+/* Clickable Results */
+.clickable-result:hover {
+    background: rgba(124, 77, 255, 0.05);
+    border-left: 3px solid var(--accent);
+}
+
+.clickable-result:hover .item-title {
+    color: var(--accent);
+}
+
+/* AdSense Container */
+#adsense-container {
+    min-height: 90px;
+    background: var(--bg-card);
+    border: 1px dashed var(--border);
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-secondary);
+    font-size: 12px;
+}
