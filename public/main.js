@@ -235,11 +235,12 @@ async function loadSearchResults(keyword, type) {
         }
 
         container.innerHTML = items.map(item => `
-            <div class="item-row">
+            <div class="item-row clickable-result" onclick="window.open('${item.link}', '_blank')" style="cursor: pointer;">
                 <div class="item-title">${item.title || item.bloggername || '결과'}</div>
-                <div class="item-desc">${item.description || item.lprice + '원' || ''}</div>
+                <div class="item-desc">${item.description || (item.lprice ? item.lprice + '원' : '') || ''}</div>
                 <div class="item-meta" style="font-size: 11px; margin-top: 8px; color: #64748b;">
-                    ${item.bloggername || item.mallName || ''} | ${item.postdate || ''}
+                    ${item.bloggername || item.mallName || ''} ${item.postdate ? '| ' + item.postdate : ''}
+                    <span style="float: right; color: var(--accent);"><i class="fas fa-external-link-alt"></i> 원문보기</span>
                 </div>
             </div>
         `).join('');
