@@ -1,6 +1,5 @@
 requests
 python-dotenv
-pandas
 beautifulsoup4
 flask
 flask-cors
