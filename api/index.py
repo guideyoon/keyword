@@ -1,36 +1,44 @@
 from flask import Flask, request, jsonify
 from flask_cors import CORS
-from naver_service import (
-    search_blog, get_api_keys, get_naver_section_order, 
-    get_related_keywords, get_keyword_info, get_blog_rank, 
-    get_search_volume, get_search_volumes_for_keywords, 
-    get_realtime_keywords, search_news, search_shop, 
-    search_kin, get_datalab_shopping_trends,
-    get_related_keywords_from_ad_api, get_google_trending_keywords,
-    analyze_top_blogs
-)
-import re
-import email.utils
+import sys
 import os
 import traceback
+
+# Ensure the api directory is in the path for local imports
+sys.path.append(os.path.dirname(__file__))
+
+try:
+    from naver_service import (
+        search_blog, get_api_keys, get_naver_section_order, 
+        get_related_keywords, get_keyword_info, get_blog_rank, 
+        get_search_volume, get_search_volumes_for_keywords, 
+        get_realtime_keywords, search_news, search_shop, 
+        search_kin, get_datalab_shopping_trends,
+        get_related_keywords_from_ad_api, get_google_trending_keywords,
+        analyze_top_blogs
+    )
+except ImportError as e:
+    print(f"Import Error: {e}")
+    # We will handle this in the routes if needed
+
+import re
+import email.utils
 from concurrent.futures import ThreadPoolExecutor
 
 app = Flask(__name__)
 CORS(app)  # Enable CORS for frontend interaction
 
-@app.errorhandler(Exception)
-def handle_exception(e):
-    # Pass through HTTP errors
-    if hasattr(e, 'code'):
-        return jsonify(error=str(e)), e.code
-    # Handle non-HTTP exceptions only
-    error_msg = traceback.format_exc()
-    print(error_msg)
-    return jsonify(error="Internal Server Error", details=str(e), traceback=error_msg), 500
-
 @app.route('/api/health')
 def health():
-    return jsonify(status="ok", message="API is running")
+    return jsonify(status="ok", message="API is running", python_version=sys.version)
+
+@app.route('/api/debug')
+def debug():
+    return jsonify({
+        "cwd": os.getcwd(),
+        "files": os.listdir(os.path.dirname(__file__)),
+        "path": sys.path
+    })
 
 def remove_html_tags(text):
     clean = re.compile('<.*?>')
