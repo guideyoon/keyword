@@ -146,11 +146,12 @@ def get_search_volume(keyword):
     """
     try:
         # Load keys
-        license_key = os.getenv("NAVER_AD_ACCESS_LICENSE")
-        secret_key = os.getenv("NAVER_AD_SECRET_KEY")
-        customer_id = os.getenv("NAVER_AD_CUSTOMER_ID")
+        license_key = os.getenv("NAVER_AD_ACCESS_LICENSE", "").strip()
+        secret_key = os.getenv("NAVER_AD_SECRET_KEY", "").strip()
+        customer_id = os.getenv("NAVER_AD_CUSTOMER_ID", "").strip()
         
         if not license_key or not secret_key or not customer_id:
+            print(f"DEBUG: Missing AD API keys: license={bool(license_key)}, secret={bool(secret_key)}, customer={bool(customer_id)}")
             return None
             
         base_url = "https://api.naver.com"
@@ -316,9 +317,9 @@ def get_related_keywords_from_ad_api(seed_keyword):
     네이버 검색광고 API를 사용하여 연관 키워드 대량(최대 1000개)과 그 검색량을 가져옵니다.
     """
     try:
-        license_key = os.getenv("NAVER_AD_ACCESS_LICENSE")
-        secret_key = os.getenv("NAVER_AD_SECRET_KEY")
-        customer_id = os.getenv("NAVER_AD_CUSTOMER_ID")
+        license_key = os.getenv("NAVER_AD_ACCESS_LICENSE", "").strip()
+        secret_key = os.getenv("NAVER_AD_SECRET_KEY", "").strip()
+        customer_id = os.getenv("NAVER_AD_CUSTOMER_ID", "").strip()
         
         if not license_key or not secret_key or not customer_id:
             return []

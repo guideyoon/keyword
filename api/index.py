@@ -47,8 +47,23 @@ def remove_html_tags(text):
 @app.route('/api/config', methods=['GET'])
 def get_config():
     client_id, client_secret = get_api_keys()
+    ad_license = os.getenv("NAVER_AD_ACCESS_LICENSE", "").strip()
+    ad_secret = os.getenv("NAVER_AD_SECRET_KEY", "").strip()
+    ad_customer = os.getenv("NAVER_AD_CUSTOMER_ID", "").strip()
+    
     return jsonify({
-        "api_configured": bool(client_id and client_secret)
+        "search_api": {
+            "configured": bool(client_id and client_secret),
+            "client_id_exists": bool(client_id),
+            "client_secret_exists": bool(client_secret)
+        },
+        "ad_api": {
+            "configured": bool(ad_license and ad_secret and ad_customer),
+            "license_exists": bool(ad_license),
+            "secret_exists": bool(ad_secret),
+            "customer_exists": bool(ad_customer)
+        },
+        "overall_ready": bool(client_id and client_secret and ad_license and ad_secret and ad_customer)
     })
 
 @app.route('/api/realtime', methods=['GET'])
