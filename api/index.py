@@ -123,39 +123,73 @@ def related():
     if not keyword:
         return jsonify({"error": "Keyword is required"}), 400
     
+    # Normalize keyword for comparison (lowercase, no spaces)
+    norm_keyword = keyword.lower().replace(" ", "")
+    
     # Use the Ad API to get related keywords and their volumes directly
-    # This is much more accurate than scraping for multi-word queries
     ad_results = get_related_keywords_from_ad_api(keyword)
+    
+    # Also try scraping for additional keywords if ad api returns limited results
+    scraped_keywords = get_related_keywords(keyword)
+    
+    # Merge: Prefer ad API data, add scraped ones that aren't in ad results
+    ad_keywords_set = set(item['keyword'].lower().replace(" ", "") for item in ad_results)
+    
+    for sk in scraped_keywords:
+        sk_norm = sk.lower().replace(" ", "")
+        if sk_norm not in ad_keywords_set and sk_norm != norm_keyword:
+            ad_results.append({
+                'keyword': sk,
+                'pc': 0,
+                'mobile': 0,
+                'total': 0,
+                'comp_idx': 0
+            })
+    
     if not ad_results:
         return jsonify([])
         
     stat_data = []
     
-    # Fetch document counts in parallel to speed up the response
+    # Fetch document counts and volumes in parallel
     def fetch_stat(item):
         kwd = item['keyword']
         info = get_keyword_info(kwd)
         docs = info.get('total', 0)
+        
+        # If no volume from ad API, try to fetch it
         total_vol = item['total']
+        pc = item['pc']
+        mobile = item['mobile']
+        
+        if total_vol == 0:
+            vol_data = get_search_volume(kwd)
+            if vol_data:
+                pc = vol_data.get('pc', 0)
+                mobile = vol_data.get('mobile', 0)
+                total_vol = vol_data.get('total', 0)
+        
         ratio = (docs / total_vol) if total_vol > 0 else 0
         
         return {
             "keyword": kwd,
-            "pc": item['pc'],
-            "mobile": item['mobile'],
+            "pc": pc,
+            "mobile": mobile,
             "total": total_vol,
             "docs": docs,
             "ratio": round(ratio, 4)
         }
 
     with ThreadPoolExecutor(max_workers=10) as executor:
-        # Sort by total volume and take top 30 for better performance and relevance
-        top_items = sorted(ad_results, key=lambda x: x['total'], reverse=True)[:30]
-        futures = [executor.submit(fetch_stat, item) for item in top_items]
+        # Sort by total volume and take top 30
+        sorted_items = sorted(ad_results, key=lambda x: x['total'], reverse=True)[:30]
+        futures = [executor.submit(fetch_stat, item) for item in sorted_items]
         for future in futures:
             try:
                 res = future.result()
-                if res['keyword'] != keyword: # Filter out original keyword
+                # Filter out the original keyword (normalized comparison)
+                res_norm = res['keyword'].lower().replace(" ", "")
+                if res_norm != norm_keyword:
                     stat_data.append(res)
             except Exception as e:
                 print(f"Error fetching stats for related keyword: {e}")
@@ -163,6 +197,7 @@ def related():
     # Re-sort by total volume for final output
     stat_data.sort(key=lambda x: x['total'], reverse=True)
     return jsonify(stat_data)
+
 
 @app.route('/api/search', methods=['GET'])
 def search():
