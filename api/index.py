@@ -158,7 +158,9 @@ def related():
     zero_vol_keywords = [item['keyword'] for item in sorted_items if item['total'] == 0]
     batch_volumes = {}
     if zero_vol_keywords:
-        batch_volumes = get_search_volumes_for_keywords(zero_vol_keywords)
+        raw_batch = get_search_volumes_for_keywords(zero_vol_keywords)
+        # Normalize keys to lowercase for case-insensitive lookup
+        batch_volumes = {k.lower(): v for k, v in raw_batch.items()}
     
     # Update items with batch-fetched volumes
     for item in sorted_items:
