@@ -831,6 +831,16 @@ body {
 
     .main-grid {
         grid-template-columns: 1fr;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .related-block {
+        order: 1;
+    }
+
+    .results-block {
+        order: 2;
     }
 
     .results-block,
