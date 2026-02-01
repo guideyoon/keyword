@@ -7,6 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
     initSearch();
     initTabs();
     initTheme();
+    initMobileMenu();
     loadRealtime();
 });
 
@@ -408,4 +409,29 @@ function showToast(msg, type = 'info') {
 
     container.appendChild(toast);
     setTimeout(() => toast.remove(), 3000);
+}
+
+function initMobileMenu() {
+    const toggle = document.getElementById('mobile-menu-toggle');
+    const overlay = document.getElementById('sidebar-overlay');
+    const appContainer = document.querySelector('.app-container');
+    const navItems = document.querySelectorAll('.nav-item');
+
+    if (toggle) {
+        toggle.addEventListener('click', () => {
+            appContainer.classList.toggle('sidebar-open');
+        });
+    }
+
+    if (overlay) {
+        overlay.addEventListener('click', () => {
+            appContainer.classList.remove('sidebar-open');
+        });
+    }
+
+    navItems.forEach(item => {
+        item.addEventListener('click', () => {
+            appContainer.classList.remove('sidebar-open');
+        });
+    });
 }
