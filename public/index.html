@@ -30,6 +30,7 @@
                 <a href="#" class="nav-item active" data-tab="dashboard"><i class="fas fa-th-large"></i> 대시보드</a>
                 <a href="#" class="nav-item" data-tab="realtime"><i class="fas fa-fire"></i> 실시간 트렌드</a>
                 <a href="#" class="nav-item" data-tab="shopping"><i class="fas fa-shopping-bag"></i> 쇼핑 트렌드</a>
+                <!-- Hidden to comply with AdSense quality policies -->
                 <!-- <a href="#" class="nav-item" data-tab="gold"><i class="fas fa-gem"></i> 황금 키워드</a> -->
             </nav>
             <!-- <div class="sidebar-footer">
@@ -63,6 +64,36 @@
             </header>
 
             <div id="dashboard-view" class="view-content active">
+                <!-- Welcome & Guide Section -->
+                <div id="welcome-guide" class="content-block glass welcome-section" style="margin-bottom: 32px;">
+                    <div class="welcome-header">
+                        <h2>🚀 키워드다차자에 오신 것을 환영합니다!</h2>
+                        <p>성공적인 블로그 운영과 마케팅의 시작은 정확한 <strong>키워드 분석</strong>입니다.</p>
+                    </div>
+                    <div class="guide-grid">
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-search"></i></div>
+                            <h4>스마트한 검색량 분석</h4>
+                            <p>궁금한 키워드를 입력하면 PC와 모바일의 정확한 검색량 정보를 실시간으로 조회합니다.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-chart-line"></i></div>
+                            <h4>블루오션 키워드 발굴</h4>
+                            <p>검색량 대비 문서 수를 분석하여 경쟁도가 낮은 황금 키워드(블루오션)를 찾아냅니다.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-link"></i></div>
+                            <h4>연관 키워드 확장</h4>
+                            <p>네이버 연관 검색 데이터를 바탕으로 성과를 극대화할 수 있는 추가 키워드를 제안합니다.</p>
+                        </div>
+                    </div>
+                    <div class="seo-tips-banner">
+                        <i class="fas fa-lightbulb"></i>
+                        <span><strong>SEO 팁:</strong> 경쟁 지수(문서수/조회수)가 0.1 미만인 키워드는 상위 노출 기회가 매우 높습니다! 지금 바로 분석을 시작해
+                            보세요.</span>
+                    </div>
+                </div>
+
                 <div class="stats-grid">
                     <div class="stat-card glass" id="pc-volume-card">
                         <div class="stat-label">PC 검색량</div>
@@ -135,9 +166,34 @@
             </div>
 
             <div id="realtime-view" class="view-content">
+                <!-- Guide Content for SEO -->
+                <div class="content-block glass guide-section" style="margin-bottom: 24px;">
+                    <h4 style="margin-bottom: 12px;">📈 실시간 트렌드 활용 가이드</h4>
+                    <div class="guide-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-bolt"></i></div>
+                            <h4>이슈 선점</h4>
+                            <p>급상승 키워드를 빠르게 파악하여 블로그 포스팅이나 콘텐츠 제작에 활용하세요.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-chart-bar"></i></div>
+                            <h4>경쟁도 분석</h4>
+                            <p>트렌드 키워드를 클릭하면 검색량과 문서수를 상세 분석할 수 있습니다.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-clock"></i></div>
+                            <h4>실시간 업데이트</h4>
+                            <p>새로고침 버튼으로 최신 트렌드를 즉시 확인할 수 있습니다.</p>
+                        </div>
+                    </div>
+                </div>
                 <div class="content-block glass full-width">
                     <div class="block-header">
-                        <h3>🔥 실시간 급상승 키워드 (Nate)</h3>
+                        <div class="header-text">
+                            <h3>🔥 실시간 급상승 키워드</h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">지금 사람들이 가장 많이 찾고
+                                있는 최신 트렌드를 확인하고 이슈 선점 기회를 잡으세요.</p>
+                        </div>
                         <button id="refresh-realtime" class="btn-refresh"><i class="fas fa-sync-alt"></i></button>
                     </div>
                     <div class="realtime-list" id="realtime-keywords">
@@ -147,9 +203,39 @@
             </div>
 
             <div id="shopping-view" class="view-content">
+                <!-- Guide Content for SEO -->
+                <div class="content-block glass guide-section" style="margin-bottom: 24px;">
+                    <h4 style="margin-bottom: 12px;">🛒 쇼핑 트렌드 활용 가이드</h4>
+                    <div class="guide-grid" style="grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));">
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-gem"></i></div>
+                            <h4>블루오션 발굴</h4>
+                            <p>검색량은 높지만 문서수가 적은 키워드를 찾아 상위 노출 기회를 잡으세요.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-tags"></i></div>
+                            <h4>카테고리 분석</h4>
+                            <p>패션, 뷰티, 가전 등 카테고리별로 인기 키워드를 상세 분석합니다.</p>
+                        </div>
+                        <div class="guide-item">
+                            <div class="guide-icon"><i class="fas fa-store"></i></div>
+                            <h4>스마트스토어 활용</h4>
+                            <p>발굴한 키워드로 상품명과 태그를 최적화하여 매출을 늘리세요.</p>
+                        </div>
+                    </div>
+                    <div class="seo-tips-banner" style="margin-top: 16px;">
+                        <i class="fas fa-lightbulb"></i>
+                        <span><strong>활용 팁:</strong> 카테고리를 선택하고 새로고침 버튼을 누르면 최신 쇼핑 트렌드를 분석합니다. 경쟁도가 낮은 키워드(💎)를 집중
+                            공략하세요!</span>
+                    </div>
+                </div>
                 <div class="content-block glass full-width">
                     <div class="block-header">
-                        <h3>🛍️ 쇼핑 트렌드 발굴 (Naver DataLab)</h3>
+                        <div class="header-text">
+                            <h3>🛍️ 쇼핑 트렌드 발굴</h3>
+                            <p style="font-size: 13px; color: var(--text-secondary); margin-top: 4px;">네이버 데이터랩 기반의
+                                카테고리별 쇼핑 인기 검색어를 분석하여 유망한 아이템을 찾아냅니다.</p>
+                        </div>
                         <div class="search-bar-container" style="width: 300px; padding: 4px 4px 4px 12px;">
                             <select id="shop-category"
                                 style="background: transparent; border: none; color: var(--text-primary); outline: none; width: 100%;">
@@ -167,12 +253,13 @@
                         </div>
                     </div>
                     <div class="table-container" id="shopping-trends-container">
-                        <div class="loading-spinner">분석 시작 버튼을 눌러주세요.</div>
+                        <div class="loading-spinner">위에서 카테고리를 선택하고 새로고침 버튼을 눌러주세요.</div>
                     </div>
                 </div>
             </div>
 
-            <div id="gold-view" class="view-content">
+            <!-- Gold View Hidden for Policy Compliance -->
+            <!-- <div id="gold-view" class="view-content">
                 <div class="content-block glass full-width">
                     <div class="block-header">
                         <div class="header-text">
@@ -185,11 +272,12 @@
                         </button>
                     </div>
                 </div>
+            </div> -->
         </main>
 
-        <!-- AdSense Ad Placeholder (Replace with your actual ad code) -->
-        <div id="adsense-container" style="max-width: 728px; margin: 20px auto; text-align: center;">
-            <!-- Ad Unit will be inserted here by AdSense -->
+        <!-- AdSense Ad Placeholder - Hidden until content is loaded -->
+        <div id="adsense-container" style="max-width: 728px; margin: 20px auto; text-align: center; display: none;">
+            <!-- Ad Unit will be inserted here by AdSense after content loads -->
         </div>
         <div id="sidebar-overlay" class="sidebar-overlay"></div>
     </div>

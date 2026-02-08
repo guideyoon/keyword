@@ -1,6 +1,7 @@
 const API_BASE = "/api";
 let currentKeyword = "";
 let currentTab = "blog";
+let adsenseShown = false;
 
 document.addEventListener('DOMContentLoaded', () => {
     initNavigation();
@@ -10,6 +11,16 @@ document.addEventListener('DOMContentLoaded', () => {
     initMobileMenu();
     loadRealtime();
 });
+
+// Show AdSense container only after content is loaded
+function showAdsenseAd() {
+    if (adsenseShown) return;
+    const adContainer = document.getElementById('adsense-container');
+    if (adContainer) {
+        adContainer.style.display = 'block';
+        adsenseShown = true;
+    }
+}
 
 function initNavigation() {
     const navItems = document.querySelectorAll('.nav-item');
@@ -118,6 +129,12 @@ async function performAnalysis(keyword) {
             return;
         }
 
+        // Hide welcome guide and show stats on first search
+        const welcomeGuide = document.getElementById('welcome-guide');
+        if (welcomeGuide) {
+            welcomeGuide.style.display = 'none';
+        }
+
         updateStats(data.summary);
         updateSections(data.sections);
         loadSearchResults(keyword, currentTab);
@@ -147,6 +164,7 @@ async function performAnalysis(keyword) {
         }
 
         showToast(`'${keyword}' 분석 완료`, 'success');
+        showAdsenseAd();
 
     } catch (err) {
         showToast("분석 중 오류가 발생했습니다.", "error");
@@ -270,6 +288,7 @@ async function loadRealtime() {
                 </span>
             </div>
         `).join('');
+        showAdsenseAd();
     } catch (err) {
         container.innerHTML = '<div class="loading-spinner">에러가 발생했습니다.</div>';
     }
@@ -315,6 +334,7 @@ async function loadShoppingTrends() {
                 </tbody>
             </table>
         `;
+        showAdsenseAd();
     } catch (err) {
         container.innerHTML = '<div class="loading-spinner">로드 실패</div>';
     }
